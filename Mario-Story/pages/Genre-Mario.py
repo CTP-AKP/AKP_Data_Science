@@ -5,9 +5,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import altair as alt
 sns.set()
-
-
-st.header("👋")
 st.title("Genre")
 
 df = pd.read_csv('..\data/Video_Games.csv')
