@@ -10,7 +10,7 @@ sns.set()
 st.header("👋")
 st.title("Video Games Plotted")
 
-df = pd.read_csv('data/Video_Games.csv')
+df = pd.read_csv('..\data/Video_Games.csv')
 df.drop_duplicates(inplace=True)
 #dataframe now.
 st.write("Table containing every col and row of df.")
