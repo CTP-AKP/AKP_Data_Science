@@ -25,36 +25,50 @@ st.title("Video Game Lifespan in Relation to Other Features")
 
 st.markdown(
     """
-    How multi-player games behave differently to single-player games
+    How different factors affect the lifespan of a video game
     """
 )
 
 
 #dataframe now.
-st.write("Table containing every col and row of df.")
+st.write("This is our dataset.")
 st.dataframe(df)
 
+st.subheader('1.0 Player Gained by Month :blue[(Gain)] :sunglasses:')
+st.write(
+    "These are the 5 games with the lowest gain within a month. They are negative which indicates this game lost players in total. "
+)
 
-st.write("This bar chart displays how many games have been made by publishers. Helpful to know as some developers are way bigger than others, and therefore may dominate sales.")
-# select_cond = df['publishers'].value_counts() > 25
-# Publisher_Game_Totals =  df['publishers'].value_counts()[select_cond]
-# st.bar_chart(Publisher_Game_Totals)
 
-
-df_sort_gain = df.sort_values(by=['gain'])[['gamename', 'gain']]
-st.dataframe(df_sort_gain)
+df_sort_gain = df.sort_values(by=['gain'])[['gamename', 'gain']].reset_index()
+st.dataframe(df_sort_gain.head())
 
 
 cyberpunk2077 = df['gamename']=='Cyberpunk 2077'
 fallout4 = df['gamename']=='Fallout 4'
 grand_theft_auto_v = df['gamename']=='Grand Theft Auto V'
 monster_hunter_world = df['gamename']=='Monster Hunter: World'
+csgo = df['gamename']=='Counter-Strike: Global Offensive'
+dota2 = df['gamename']=='Dota 2'
+destiny2 = df['gamename']=='Destiny 2'
+team_fortress2 = df['gamename']=='Team Fortress 2'
 
-gb = df[fallout4 | grand_theft_auto_v | monster_hunter_world | cyberpunk2077]
+gb = df[fallout4 | grand_theft_auto_v | monster_hunter_world | cyberpunk2077 | dota2]
 gb = gb.reset_index()
 st.line_chart(gb, x="date", y="avg", color="gamename")
 st.line_chart(gb, x="date", y="gain", color="gamename")
 
+gb = df[fallout4 | destiny2 | grand_theft_auto_v ]
+gb = gb.reset_index()
+st.line_chart(gb, x="date", y="peak", color="gamename")
+st.line_chart(gb, x="date", y="avg", color="gamename")
+
+
+st.write("Multi-player vs Single-player.")
+gb = df.groupby(['date', 'multi_player']).mean('avg')
+gb = gb.reset_index()
+st.line_chart(df, x="date", y="avg", color="multi_player")
+st.line_chart(gb, x="date", y="avg", color="multi_player")
 
 # fallout4 = df[df['gamename']=='Fallout 4']
 # grand_theft_auto_v = df[df['gamename']=='Grand Theft Auto V']
