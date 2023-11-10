@@ -55,9 +55,9 @@ options = top_gained_games
 selected_option = st.selectbox("Select a Video Game", options)
 
 # Plot 1
-gb = gb[gb['gamename']==selected_option].sort_values(by='date').reset_index()
+gb1 = gb[gb['gamename']==selected_option].sort_values(by='date').reset_index()
 title = f"Monthly Player Gain of {selected_option} Over Time:"
-fig = px.line(gb, x='date', y='gain', title=title)
+fig = px.line(gb1, x='date', y='gain', title=title)
 st.plotly_chart(fig, use_container_width=True)
 
 
@@ -81,5 +81,5 @@ gb_list = {game: df[df["gamename"] == game] for game in selected_options}
 fig = go.Figure()
 fig.update_layout(title=title)
 for game, df in gb_list.items():
-    fig = fig.add_trace(go.Scatter(x=df["date"], y=df["avg"], name=game, mode='lines'))
+    fig = fig.add_trace(go.Scatter(x=df["date"], y=df["gain"], name=game, mode='lines'))
 st.plotly_chart(fig)
