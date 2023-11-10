@@ -85,15 +85,41 @@ median_multiplayer = df_MP['avg'].median()
 
 
 df_SP = df_SP.groupby('date', as_index=False)['avg'].agg('mean')
+select_cond = df_SP['avg'] < 80000
+
 st.write(df_SP)
+df_SP = df_SP[select_cond]
 fig = plt.figure(figsize=(10,4))
 sns.lineplot(x='date', y='avg',data=df_SP)
 st.pyplot(fig)
 
+st.markdown(
+    """
+
+    The peaks on this graph are release dates. As expected, when a game releases we get the most influx of players. But, most games playerbase seem to fall down to 
+
+    """
+)
 
 
+df_MP = df_MP.groupby('date', as_index=False)['avg'].agg('mean')
+
+# df_MP = df_MP[select_cond]
+fig = plt.figure(figsize=(10,4))
+sns.lineplot(x='date', y='avg',data=df_MP)
+st.pyplot(fig)
+
+st.markdown(
+    """
+
+    Now for multiplayer games, the average is way more prevalent here when comparing to the massive games.
+    CSGO eclipses ALL other games, along with Dota 2 and other games, so does this give us a healthy average?
+    Also, are these games included actually an average?
+
+    """
 
 
+)
 
 st.markdown(
     """
