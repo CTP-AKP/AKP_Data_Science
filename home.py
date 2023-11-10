@@ -20,26 +20,28 @@ df['release_date'] = pd.to_datetime(df['release_date'])
 
 # Title
 st.header("👋")
-st.title("Video Game Lifespan in Relation to Other Features")
+st.title("When Will Your Favorite Game Die?")
+# st.title("Video Game Lifespan in Relation to Other Features")
 
-
+# Markdown
 st.markdown(
     """
-    How different factors affect the lifespan of a video game
+    This project visualizes how different factors affect the lifespan of a video game. This is our dataset. Player counts of video games are recorded on a monthly basis. 
     """
 )
 
 
-#dataframe now.
-st.write("This is our dataset.")
+# Dataframe Preview
+# st.write("This is our dataset. Player counts of video games are recorded on a monthly basis. ")
 st.dataframe(df)
 
+# Plot 1
 st.subheader('1.0 Player Gained by Month :blue[(Gain)] :sunglasses:')
 st.write(
     "These are the 5 games with the lowest gain within a month. They are negative which indicates this game lost players in total. "
 )
 
-
+# Plot 1 - selected dataframe preview
 df_sort_gain = df.sort_values(by=['gain'])[['gamename', 'gain']].reset_index()
 st.dataframe(df_sort_gain.head())
 
