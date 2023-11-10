@@ -58,20 +58,40 @@ st.markdown(
 
 
 
-MP_max_peak = df_MP['peak'].max()
-select_cond = df_MP['peak'] == 1305714
+# MP_max_peak = df_MP['peak'].max()
+# select_cond = df_MP['peak'] == 1305714
+select_cond = df_MP['gamename'] == 'Destiny 2'
 df_MP_max = df_MP[select_cond]
-st.write(df_MP_max)
+st.write("Destiny 2 Avg Player Graph over Time (Multiplayer)")
+st.line_chart(
+    
+    df_MP_max,
+    x='date',y='avg')
 
 
-SP_max_peak = df_SP['peak'].max()
-select_cond = df_SP['peak'] == 830387
+# SP_max_peak = df_SP['peak'].max()
+# select_cond = df_SP['peak'] == 830387
+# df_SP_max = df_SP[select_cond]
+select_cond = df_SP['gamename'] == 'Fallout 4'
 df_SP_max = df_SP[select_cond]
-st.write(df_SP_max)
+#st.write(df_SP_max)
+st.write("Fallout 4 Avg Player Graph over Time (Singleplayer)")
+st.line_chart(
+    df_SP_max,
+    x='date',y='avg')
+
+# select_cond = df_SP['gamename'] == 'The Elder Scrolls V: Skyrim'
+# df_SP_max = df_SP[select_cond]
+# #st.write(df_SP_max)
+# st.write(" Skyrim Avg Player Graph over Time (Singleplayer)")
+# st.line_chart(
+#     df_SP_max,
+#     x='date',y='avg')
 
 
 select_cond = (df_SP['avg'] > 20000)
 df_SP = df_SP[select_cond]
+
 
 #so maybe, display avg for each game, per month. then we can average the avg out since these are all singleplayer games.
 #but may have to group by release date anyway. or show it through analysis
@@ -88,27 +108,28 @@ df_SP = df_SP.groupby('date', as_index=False)['avg'].agg('mean')
 select_cond = df_SP['avg'] < 80000
 
 st.write(df_SP)
-df_SP = df_SP[select_cond]
-fig = plt.figure(figsize=(10,4))
-sns.lineplot(x='date', y='avg',data=df_SP)
-st.pyplot(fig)
-
 st.markdown(
     """
 
-    The peaks on this graph are release dates. As expected, when a game releases we get the most influx of players. But, most games playerbase seem to fall down to 
+    The peaks on both graphs are release dates. As expected, when a game releases we get the most influx of players. But, most singeplayer game playerbase seem to fall way below multiplayer.
+
+    Singleplayer games average players.
 
     """
+)
+df_SP = df_SP[select_cond]
+fig = plt.figure(figsize=(10,4))
+# sns.lineplot(x='date', y='avg',data=df_SP)
+# st.pyplot(fig)
+st.line_chart(
+    df_SP,
+    x='date',
+    y='avg'
+
 )
 
 
 df_MP = df_MP.groupby('date', as_index=False)['avg'].agg('mean')
-
-# df_MP = df_MP[select_cond]
-fig = plt.figure(figsize=(10,4))
-sns.lineplot(x='date', y='avg',data=df_MP)
-st.pyplot(fig)
-
 st.markdown(
     """
 
@@ -118,8 +139,20 @@ st.markdown(
 
     """
 
+)
+
+# df_MP = df_MP[select_cond]
+fig = plt.figure(figsize=(10,4))
+# sns.lineplot(x='date', y='avg',data=df_MP)
+# st.pyplot(fig)
+
+st.line_chart(
+    df_MP,
+    x='date',
+    y='avg'
 
 )
+
 
 st.markdown(
     """
