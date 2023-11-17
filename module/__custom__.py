@@ -25,6 +25,13 @@ df = df.dropna()
 # ### adding single-player feature ###
 def add_opp_features(genre):
     df[genre[0]] = (df[genre[1]]==0)*1
+    
+def add_range_features(arg):
+    lower = arg[0]; upper = arg[1]
+    name = arg[2]; genre = arg[3]
+    
+    condition = (df[genre]>=lower) & (df[genre]<upper)
+    df[name] = condition*1
 
 def exec_page(theme, page_genres):
     # Header

@@ -26,7 +26,7 @@ df = df.dropna()
 
 # Header
 st.header("🛒")
-st.title("Customized Plot on :blue[Developers]")
+st.title("Customized Plot on :blue[Publishers]")
 
 ##### FILTER #####
 # Featuer for both axis
