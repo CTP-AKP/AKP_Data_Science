@@ -22,25 +22,23 @@ df['release_date'] = pd.to_datetime(df['release_date'])
 df['avg_peak_perc'] = df['avg_peak_perc'].str.rstrip('%').astype('float') 
 df = df.dropna()
 
-# ### Adding mainstream genre feature ###
-df['mainstream'] = (df['indie']==0)*1
-
 # Header
 st.header("👋")
-st.title("Customized Plot on :blue[Genres]")
+st.title("Customized Plot on :blue[Age Restriction]")
 
 ##### FILTER #####
 # Featuer for both axis
 features = ['avg', 'gain', 'peak', 'avg_peak_perc']
 features += ['metacritic_score', 'positive', 'negative']
-genres = ['genre_action', 'genre_adventure', 'genre_casual',
-       'genre_sexual_content', 'genre_strategy', 'genre_sports',
-       'genre_racing', 'genre_rpg', 'genre_simulation', 'indie', 'mainstream']
+genres = ['age_0_plus', 'age_13_plus', 'age_18_plus']
+##################
 
-left_col, right_col = st.columns(2)
+
 order = st.toggle(label='Find the Worst Games', value=False)   # descending order toggle switch
+left_col, right_col = st.columns(2)
 with left_col: y = st.selectbox("Select a Feature", features)       # feature select box
-with right_col: ax = st.selectbox("Select a Category", genres)     # category select box
+with right_col: ax = st.selectbox("Select a Category", genres)      # category select box
+
 order_name='Worst' if order else 'Highest'                          # string formating
 y_name = y.replace('_', ' ').title()
 ax_name = ax.title().replace('_', ' ')
@@ -48,24 +46,31 @@ ax_name = ax.title().replace('_', ' ')
 # Data - sorting and filtering
 df_ax = df[df[ax]==1]
 df_ax = df_ax[['gamename', 'date', y, ax]].sort_values(by=y, ascending=order).reset_index()    # Data - Plot 1
-top_games = df_ax.gamename.unique()[0:5]
 df_bx = df[['gamename', 'date', y]+genres].sort_values(by=y, ascending=order).reset_index()      # Data - Plot 2
+
+
+# Slider
+max = df_ax.gamename.unique().tolist()
+max = len(max)-1
+ranges = st.slider(
+    label=f'Select range of the {order_name.lower()} games',
+    value = (1, 5),
+    # min_value=0, max_value=30, 
+    min_value=1, max_value=max, 
+)
+top_games = df_ax.gamename.unique()[ranges[0]-1:ranges[1]]
+
 
 # Dataframe preview
 title = f"1.1 Dataset of :blue[{ax_name}] Games Sorted by :blue[{y_name}]:"
 st.subheader(title)
 st.dataframe(df_ax)
 
-title = f"1.2 Five :blue[{ax_name}] Games with the :red[{order_name}] Monthly :blue[{y_name}]:"
-st.subheader(title)
-st.write(top_games)
-
-
 
 ##### PLOT 1 #####
 # Plot 1 - markdown
 st.markdown("""***""")
-title = f"1.3 :blue[{ax_name}] Games with the :red[{order_name}] :blue[{y_name}]"
+title = f"1.3 Rank {ranges[0]} to {ranges[1]} :blue[{ax_name}] Games with the :red[{order_name}] :blue[{y_name}]"
 st.subheader(title)
 
 # Plot 1 - select box
@@ -113,7 +118,7 @@ fig_mean = go.Figure()
 for category, gb in mean_list.items():
     fig_mean = fig_mean.add_trace(go.Scatter(x=gb['date'], y=gb[y], name=category, mode='lines'))
 fig_mean.update_layout(
-    title = 'Mean of '+ plot_title, 
+    title = 'Mean of ' + plot_title,
     xaxis_title = 'Date',
     yaxis_title = 'Mean of '+y_name,
 )
@@ -127,7 +132,7 @@ fig_sum = go.Figure()
 for category, gb in sum_list.items():
     fig_sum = fig_sum.add_trace(go.Scatter(x=gb['date'], y=gb[y], name=category))
 fig_sum.update_layout(
-    title = 'Sum of '+ plot_title, 
+    title = 'Sum of ' + plot_title,
     xaxis_title='Date',
     yaxis_title='Sum of '+y_name,
 )
@@ -143,7 +148,7 @@ fig_sc.update_traces(
     marker=dict(size=4, opacity=0.5)
 )
 fig_sc.update_layout(
-    title = plot_title, 
+    title = plot_title,
     xaxis_title='Date',
     yaxis_title=y_name,
 )

@@ -46,24 +46,30 @@ ax_name = ax.title().replace('_', ' ')
 # Data - sorting and filtering
 df_ax = df[df[ax]==1]
 df_ax = df_ax[['gamename', 'date', y, ax]].sort_values(by=y, ascending=order).reset_index()    # Data - Plot 1
-top_games = df_ax.gamename.unique()[0:5]
 df_bx = df[['gamename', 'date', y]+genres].sort_values(by=y, ascending=order).reset_index()      # Data - Plot 2
+
+# Slider
+max = df_ax.gamename.unique().tolist()
+max = len(max)-1
+ranges = st.slider(
+    label=f'Select range of the {order_name.lower()} games',
+    value = (1, 5),
+    # min_value=0, max_value=30, 
+    min_value=1, max_value=max, 
+)
+top_games = df_ax.gamename.unique()[ranges[0]-1:ranges[1]]
 
 # Dataframe preview
 title = f"1.1 Dataset of :blue[{ax_name}] Games Sorted by :blue[{y_name}]:"
 st.subheader(title)
 st.dataframe(df_ax)
 
-title = f"1.2 Five :blue[{ax_name}] Games with the :red[{order_name}] Monthly :blue[{y_name}]:"
-st.subheader(title)
-st.write(top_games)
-
 
 
 ##### PLOT 1 #####
 # Plot 1 - markdown
 st.markdown("""***""")
-title = f"1.3 :blue[{ax_name}] Games with the :red[{order_name}] :blue[{y_name}]"
+title = f"1.3 Rank {ranges[0]} to {ranges[1]} :blue[{ax_name}] Games with the :red[{order_name}] :blue[{y_name}]"
 st.subheader(title)
 
 # Plot 1 - select box

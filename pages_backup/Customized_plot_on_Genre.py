@@ -21,20 +21,21 @@ df['date'] = pd.to_datetime(df['date'])
 df['release_date'] = pd.to_datetime(df['release_date'])
 df['avg_peak_perc'] = df['avg_peak_perc'].str.rstrip('%').astype('float') 
 df = df.dropna()
-# ### adding single-player feature ###
-df['not_windows'] = (df['windows']==0)*1
-df['not_mac'] = (df['mac']==0)*1
-df['not_linux'] = (df['linux']==0)*1
+
+# ### Adding mainstream genre feature ###
+df['mainstream'] = (df['indie']==0)*1
 
 # Header
 st.header("👋")
-st.title("Customized Plot on :blue[Operating System]")
+st.title("Customized Plot on :blue[Genres]")
 
 ##### FILTER #####
 # Featuer for both axis
 features = ['avg', 'gain', 'peak', 'avg_peak_perc']
 features += ['metacritic_score', 'positive', 'negative']
-genres = ['windows', 'mac', 'linux', 'not_windows', 'not_mac', 'not_linux']
+genres = ['genre_action', 'genre_adventure', 'genre_casual',
+       'genre_sexual_content', 'genre_strategy', 'genre_sports',
+       'genre_racing', 'genre_rpg', 'genre_simulation', 'indie', 'mainstream']
 
 left_col, right_col = st.columns(2)
 order = st.toggle(label='Find the Worst Games', value=False)   # descending order toggle switch
@@ -47,24 +48,30 @@ ax_name = ax.title().replace('_', ' ')
 # Data - sorting and filtering
 df_ax = df[df[ax]==1]
 df_ax = df_ax[['gamename', 'date', y, ax]].sort_values(by=y, ascending=order).reset_index()    # Data - Plot 1
-top_games = df_ax.gamename.unique()[0:5]
 df_bx = df[['gamename', 'date', y]+genres].sort_values(by=y, ascending=order).reset_index()      # Data - Plot 2
+
+# Slider
+max = df_ax.gamename.unique().tolist()
+max = len(max)-1
+ranges = st.slider(
+    label=f'Select range of the {order_name.lower()} games',
+    value = (1, 5),
+    # min_value=0, max_value=30, 
+    min_value=1, max_value=max, 
+)
+top_games = df_ax.gamename.unique()[ranges[0]-1:ranges[1]]
 
 # Dataframe preview
 title = f"1.1 Dataset of :blue[{ax_name}] Games Sorted by :blue[{y_name}]:"
 st.subheader(title)
 st.dataframe(df_ax)
 
-title = f"1.2 Five :blue[{ax_name}] Games with the :red[{order_name}] Monthly :blue[{y_name}]:"
-st.subheader(title)
-st.write(top_games)
-
 
 
 ##### PLOT 1 #####
 # Plot 1 - markdown
 st.markdown("""***""")
-title = f"1.3 :blue[{ax_name}] Games with the :red[{order_name}] :blue[{y_name}]"
+title = f"1.3 Rank {ranges[0]} to {ranges[1]} :blue[{ax_name}] Games with the :red[{order_name}] :blue[{y_name}]"
 st.subheader(title)
 
 # Plot 1 - select box
