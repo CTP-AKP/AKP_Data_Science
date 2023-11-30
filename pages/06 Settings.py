@@ -1,6 +1,6 @@
 import streamlit as st
 
-from module.__custom30__ import *
+from module.__custom__ import *
 
 theme = "Settings"
 page_genres = ['full_audio', 'full_controller_support', 'not_full_audio', 'not_full_controller']

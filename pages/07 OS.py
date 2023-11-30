@@ -1,6 +1,6 @@
 import streamlit as st
 
-from module.__custom30__ import *
+from module.__custom__ import *
 
 theme = "OS"
 page_genres = ['windows', 'mac', 'linux', 'not_windows', 'not_mac', 'not_linux']

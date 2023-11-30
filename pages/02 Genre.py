@@ -1,8 +1,8 @@
 import streamlit as st
 
-from module.__custom30__ import *
+from module.__custom__ import *
 
-theme = "Genres"
+theme = "Genre"
 page_genres = ['genre_action', 'genre_adventure', 'genre_casual',
        'genre_sexual_content', 'genre_strategy', 'genre_sports',
        'genre_racing', 'genre_rpg', 'genre_simulation', 'indie', 'mainstream']

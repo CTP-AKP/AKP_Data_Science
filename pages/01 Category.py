@@ -1,8 +1,8 @@
 import streamlit as st
 
-from module.__custom30__ import *
+from module.__custom__ import *
 
-theme = "Categories"
+theme = "Category"
 page_genres = ['multi_player', 'pvp', 'co-op', 'single_player']
 add_genre = ['single_player', 'multi_player']
 
