@@ -10,7 +10,7 @@ import altair as alt
 st.cache(persist=True, show_spinner=False, suppress_st_warning=True)
 
 recommended_df = None
-dataframe = pd.read_csv('data/cosine.csv')
+dataframe = pd.read_csv('data\cosine.csv')
 st.markdown (
     """
     Using content-based filtering, we created a Video Game Recommender for the average gamer, based on Steam.

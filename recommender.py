@@ -13,7 +13,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
 # %%
-df = pd.read_csv('data/cosine.csv')
+df = pd.read_csv('data\cosine.csv')
 df.columns
 tfidf_vectorizer = TfidfVectorizer()
 text_data_about = df['About the game'].astype(str)
