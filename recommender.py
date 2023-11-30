@@ -24,7 +24,7 @@ df.columns
 # text_data = text_data_about + ' ' + text_data_genre + ' ' + text_data_developers + ' ' +  text_data_categories + ' ' + text_data_title
 # tfidf_matrix = tfidf_vectorizer.fit_transform(text_data)
 
-load our old 
+# load our old 
 tfidf_matrix = sparse.load_npz("data/tfidf_matrix.npz")
 #similarity_matrix = np.load("data/similarity_matrix.npy")
 with open("data/tf_vectorizer.pk1", 'rb') as file:
