@@ -15,15 +15,15 @@ from sklearn.metrics.pairwise import linear_kernel
 # %%
 df = pd.read_csv('data/cosine.csv')
 df.columns
-tfidf_vectorizer = TfidfVectorizer()
-text_data_about = df['About the game'].astype(str)
-text_data_genre = df['Genres'].astype(str)
-text_data_categories = df['Categories'].astype(str)
-text_data_developers = df['Developers'].astype(str)
-text_data_title = df['Name'].astype(str)
-text_data = text_data_about + ' ' + text_data_genre + ' ' + text_data_developers + ' ' +  text_data_categories + ' ' + text_data_title
-tfidf_matrix = tfidf_vectorizer.fit_transform(text_data)
-similarity_matrix = cosine_similarity(tfidf_matrix,tfidf_matrix)
+# tfidf_vectorizer = TfidfVectorizer()
+# text_data_about = df['About the game'].astype(str)
+# text_data_genre = df['Genres'].astype(str)
+# text_data_categories = df['Categories'].astype(str)
+# text_data_developers = df['Developers'].astype(str)
+# text_data_title = df['Name'].astype(str)
+# text_data = text_data_about + ' ' + text_data_genre + ' ' + text_data_developers + ' ' +  text_data_categories + ' ' + text_data_title
+# tfidf_matrix = tfidf_vectorizer.fit_transform(text_data)
+# similarity_matrix = cosine_similarity(tfidf_matrix,tfidf_matrix)
 
 #load our old 
 # tfidf_matrix = sparse.load_npz("data/tfidf_matrix.npz")
