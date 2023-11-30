@@ -2,19 +2,9 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import altair as alt
-import plotly.express as px
 import plotly.graph_objects as go
-
-from module.__selectpage__ import st_page_selectbox
 from streamlit_searchbox import st_searchbox
-
-import datetime
-import matplotlib.dates as mdates
-from matplotlib.dates import DateFormatter
-sns.set()
+from module.__selectpage__ import st_page_selectbox
 
 # Load the dataset
 df = pd.read_csv('./data/join_02.csv')
