@@ -13,13 +13,23 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
 # %%
-df = pd.read_csv('data\cosine.csv')
+df = pd.read_csv('data/cosine.csv')
 df.columns
+tfidf_vectorizer = TfidfVectorizer()
+text_data_about = df['About the game'].astype(str)
+text_data_genre = df['Genres'].astype(str)
+text_data_categories = df['Categories'].astype(str)
+text_data_developers = df['Developers'].astype(str)
+text_data_title = df['Name'].astype(str)
+text_data = text_data_about + ' ' + text_data_genre + ' ' + text_data_developers + ' ' +  text_data_categories + ' ' + text_data_title
+tfidf_matrix = tfidf_vectorizer.fit_transform(text_data)
+similarity_matrix = cosine_similarity(tfidf_matrix,tfidf_matrix)
+
 #load our old 
-tfidf_matrix = sparse.load_npz("data/tfidf_matrix.npz")
-similarity_matrix = np.load("data/similarity_matrix.npy")
-with open("data/tf_vectorizer.pk1", 'rb') as file:
-    tfidf_vectorizer = pickle.load(file)
+# tfidf_matrix = sparse.load_npz("data/tfidf_matrix.npz")
+# similarity_matrix = np.load("data/similarity_matrix.npy")
+# with open("data/tf_vectorizer.pk1", 'rb') as file:
+#     tfidf_vectorizer = pickle.load(file)
 # %%
 def CosineGameRecommended(gamename:str, recommended_games:int=5,tfidf_vectorizer=tfidf_vectorizer, similarity_matrix=similarity_matrix,tfidf_matrix=tfidf_matrix, df_reset=df):
     # Combine text data from 'About the game' and 'Genres'
