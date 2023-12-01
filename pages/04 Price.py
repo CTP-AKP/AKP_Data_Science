@@ -1,8 +1,8 @@
 import streamlit as st
 
-from module.__custom30__ import *
+from module.__custom__ import *
 
-theme = "Prices"
+theme = "Price"
 page_genres = ['price_free', 'price_5', 'price_15', 'price_20', 'price_40', 'price_60', 'price_most']
 add_genres = [[0, 0.001, 'price_free', 'price'], 
               [0.001, 5.001, 'price_5', 'price'],

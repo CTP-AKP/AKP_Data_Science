@@ -1,6 +1,6 @@
 import streamlit as st
 
-from module.__custom30__ import *
+from module.__custom__ import *
 
 theme = "DLC Counts"
 page_genres = ['dlc_0', 'dlc_5', 'dlc_15', 'dlc_40', 'dlc_100', 'dlc_300', 'dlc_most']
