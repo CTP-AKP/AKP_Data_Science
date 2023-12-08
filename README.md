@@ -6,7 +6,7 @@ Provide new and insightful recommendations for what Video Games to play next.
 
 ## Overview:
 **Built Using** 
-<img src="https://camo.githubusercontent.com/89a772d0673376b9abf671ce8281af4704cdcf2ad50f61026e1afe820e8327a8/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f73747265616d6c69742d6666666666663f7374796c653d666f722d7468652d6261646765266c6f676f3d73747265616d6c6974266c6f676f436f6c6f723d666630303030"/><img src="https://avatars.githubusercontent.com/u/25720743?s=48&v=4"> <img src="https://github.com/langchain-ai.png?size=40">
+<img src="https://camo.githubusercontent.com/89a772d0673376b9abf671ce8281af4704cdcf2ad50f61026e1afe820e8327a8/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f73747265616d6c69742d6666666666663f7374796c653d666f722d7468652d6261646765266c6f676f3d73747265616d6c6974266c6f676f436f6c6f723d666630303030"/>  <img src="https://avatars.githubusercontent.com/u/25720743?s=48&v=4">   <img src="https://github.com/langchain-ai.png?size=40">
 
 
 
