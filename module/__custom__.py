@@ -1,10 +1,12 @@
-# Libraries
 import streamlit as st
 import pandas as pd
 import numpy as np
+import importlib
 import plotly.graph_objects as go
 from streamlit_searchbox import st_searchbox
 from module.__selectpage__ import st_page_selectbox
+from recommender import CosineGameRecommended
+from recommender_interface import show_recommender_interface
 
 # Load the dataset
 df = pd.read_csv('./data/join_02.csv')
@@ -216,12 +218,28 @@ def exec_page(emoji, theme, page_genres):
     st.markdown("""***""")
     plo2_box(theme, y, genres, df_bx)
 
-##### HOME PAGE #####
+#Home
 def exec_page_home(theme):
-    st_page_selectbox(theme)
-    
-    # Header
-    st.header(f"👋 ForcaSteam")
+    st.markdown("""
+    <div style="text-align: center">
+        <h1>Welcome to GameInsightify!</h1>
+        <p>Are you looking for a new game to play? Or perhaps you've never played a video game and want your first experience to be the best? We've got you covered.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+        On our website, you can:
+        - **Find recommendations** tailored to your taste.
+        - **Explore in-depth analysis** of various games.
+        - **Compare** different titles to find what suits you best.
+
+        Dive in and discover your next favorite game!
+    """, unsafe_allow_html=True)
+
+    # Header for the recommender section
+    st.header("🎮 Game Recommender")
+    show_recommender_interface()
+
     st.title("Customized Plot on :blue[General Features]")
 
     ##### FILTER #####
