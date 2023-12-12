@@ -13,6 +13,8 @@ Provide new and insightful recommendations for what Video Games to play next.
 **Datasets:**  
 - <a href = "https://www.kaggle.com/datasets/fronkongames/steam-games-dataset">Steam Games Dataset</a>
 
+![ezgif com-video-to-gif-converted](https://github.com/CTP-AKP/AKP_Data_Science/assets/118378371/f7965024-75f3-4d87-83b2-3aecc85bd0c6)
+
 ## Project Outline:
 Our data consists of descriptions, and a collection of over 83,000 games on the Steam platform. Current recommendation models use collaborative and/or content-based approaches. We use Large Language Models (LLM) and Langchain to make our recommendations.
 
