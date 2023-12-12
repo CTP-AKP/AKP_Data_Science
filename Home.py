@@ -25,7 +25,9 @@ def read_api_key_from_secrets(file_path='secrets.json'):
 
 # Example usage
 try:
-    openai.api_key = read_api_key_from_secrets()
+    key = read_api_key_from_secrets()
+    openai.api_key = key
+    os.environ['OPENAI_API_KEY'] = key
     print(f"OpenAI API Key Found")
 except (FileNotFoundError, ValueError, KeyError) as e:
     print(f"Error: {e}")
