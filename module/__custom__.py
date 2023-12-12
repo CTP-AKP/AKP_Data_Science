@@ -115,7 +115,7 @@ def dfbox(ax_name, y_name, df_ax, ranges, order_name):
 
 def rec_dfbox():
     title = f"1.1 :blue[Recommended] by :green[GameInsightify]"
-    if st.session_state.gamenames[-1]:
+    if len(st.session_state.gamenames) > 0:
         with st.sidebar:
             rec_games = st.session_state.gamenames[-1]
             df_names = pd.DataFrame(rec_games, columns=['gamename'])
@@ -135,8 +135,10 @@ def plot1_box(ax, y, order_name, ranges, df_ax, top_games):
     st.subheader(title)
 
     # Plot 1 - select box
+    rec_games = []
+    if len(st.session_state.gamenames) > 0 : rec_games = st.session_state.gamenames[-1]
     favorite_game = searchbox(None)                                                     # search box to add a user favorite game on Plot 1
-    fav_games = add_list([favorite_game], st.session_state.gamenames[-1])
+    fav_games = add_list([favorite_game], rec_games)
     fav_options = st.multiselect('Select Recommended Games', fav_games)
     
     options = top_games
@@ -410,8 +412,10 @@ def exec_page_home(theme):
 
 
     # Plot 1 - select box
+    rec_games = []
+    if len(st.session_state.gamenames)>0: rec_games = st.session_state.gamenames[-1]
     favorite_game = searchbox(None)                                                     # search box to add a user favorite game on Plot 1
-    fav_games = add_list([favorite_game], st.session_state.gamenames[-1])
+    fav_games = add_list([favorite_game], rec_games)
     fav_options = st.multiselect('Select Recommended Games', fav_games)
     
     options = top_games
