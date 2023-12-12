@@ -12,8 +12,10 @@ add_genres = [[0, 0.001, 'price_free', 'price'],
               [20.001, 40.001, 'price_40', 'price'],
               [40.001, 60.001, 'price_60', 'price'], 
               [60.001, 9999, 'price_most', 'price']]
+labels = 'price'
 
 # ### adding single-player feature ###
 for add in add_genres:
        add_range_features(add)
 exec_page('💸', theme, page_genres)
+plot3_box(theme, labels)
