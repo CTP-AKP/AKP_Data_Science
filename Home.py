@@ -150,8 +150,9 @@ agent = (
 agent_executor = AgentExecutor(tools=[retriever_tool], agent=agent, verbose=True)
 
 post_prompt = """Do not give me any information that is not included in the document. 
-    If you do not have an answer, say 'I do not have an answer for that, please ask another question. If you need more context from the user, ask them to 
-    provide more context in the next query. Do not include games that contain the queried game in the title.
+    If you do not have an answer, say 'I do not have an answer for that, please ask another question.' 
+    If you need more context from the user, ask them to provide more context in the next query. Do not include games that contain the queried game in the title.
+    If a user asks for a type of game, use that type to find a game that mentions the type.
 """
 
 st.header("🕹️ GameInsightify - Your Personal Game Recommender")
