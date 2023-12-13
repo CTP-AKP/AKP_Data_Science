@@ -5,6 +5,7 @@ import time
 from module.__custom__ import *
 from streamlit_extras.switch_page_button import switch_page
 
+
 # Openai API Key
 import openai 
 import json
@@ -55,28 +56,103 @@ db_plot = Chroma(
     embedding_function=embedding
 )
 
-metadata_field_info = [
-    AttributeInfo(
-        name="name",
-        description="The name of the video game on steam",
-        type="string",
-    )
-]
-document_content_description = "Brief summary of a video game on Steam"
-
 
 with st.sidebar: is_plot = st.toggle('Enable Plot')
 db_selected = db_cos
 if is_plot: db_selected = db_plot
 
 
-retriever = SelfQueryRetriever.from_llm(
-    llm,
-    db_selected,
-    document_content_description,
-    metadata_field_info,
-    enable_limit=True, 
+
+from langchain.agents.agent_toolkits.conversational_retrieval.tool import (
+    create_retriever_tool,
 )
+retriever = db_selected.as_retriever()
+retriever_tool = create_retriever_tool(
+    retriever,
+    "document-retriever",
+    "Query a retriever to get information about the video game dataset.",
+)
+from typing import List
+
+from langchain.utils.openai_functions import convert_pydantic_to_openai_function
+from pydantic import BaseModel, Field
+
+
+class Response(BaseModel):
+    """Final response to the question being asked.
+        If you do not have an answer, say you do not have an answer, and ask the user to ask another recommendation.
+        If you do have an answer, be verbose and explain why you think the game answers the user's query.
+        Don't give information not mentioned in the documents CONTEXT.
+        You should always refuse to answer questions that are not related to this specific domain, of video game recommendation.
+        If no document passes the minimum threshold of similarity .75, default to apologizing for no answer.
+    """
+
+    answer: str = Field(description="The final answer to the user, including the names in the answer.")
+    name: List[str] = Field(
+        description="A list of the names of the games found for the user. Only include the game name if it was given as a result to the user's query."
+    )
+
+import json
+
+from langchain.schema.agent import AgentActionMessageLog, AgentFinish
+def parse(output):
+    # If no function was invoked, return to user
+    if "function_call" not in output.additional_kwargs:
+        return AgentFinish(return_values={"output": output.content}, log=output.content)
+
+    # Parse out the function call
+    function_call = output.additional_kwargs["function_call"]
+    name = function_call["name"]
+    inputs = json.loads(function_call["arguments"])
+
+    # If the Response function was invoked, return to the user with the function inputs
+    if name == "Response":
+        return AgentFinish(return_values=inputs, log=str(function_call))
+    # Otherwise, return an agent action
+    else:
+        return AgentActionMessageLog(
+            tool=name, tool_input=inputs, log="", message_log=[output]
+        )
+from langchain.agents import AgentExecutor
+from langchain.agents.format_scratchpad import format_to_openai_function_messages
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain.tools.render import format_tool_to_openai_function
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", "You are a recommendation assistant, based off documents."),
+        ("user", "{input}"),
+        MessagesPlaceholder(variable_name="agent_scratchpad"),
+    ]
+)
+
+llm_with_tools = llm.bind(
+    functions=[
+        # The retriever tool
+        format_tool_to_openai_function(retriever_tool),
+        # Response schema
+        convert_pydantic_to_openai_function(Response),
+    ]
+)
+
+agent = (
+    {
+        "input": lambda x: x["input"],
+        # Format agent scratchpad from intermediate steps
+        "agent_scratchpad": lambda x: format_to_openai_function_messages(
+            x["intermediate_steps"]
+        ),
+    }
+    | prompt
+    | llm_with_tools
+    | parse
+)
+agent_executor = AgentExecutor(tools=[retriever_tool], agent=agent, verbose=True)
+
+post_prompt = """Do not give me any information that is not included in the document. 
+    If you do not have an answer, say 'I do not have an answer for that, please ask another question. If you need more context from the user, ask them to 
+    provide more context in the next query. Do not include games that contain the queried game in the title.
+"""
 
 st.header("🕹️ GameInsightify - Your Personal Game Recommender")
 
@@ -122,21 +198,26 @@ if prompt := st.chat_input("Need a game recommendation?"):
         message_placeholder = st.empty()
         
         # docs = db.max_marginal_relevance_search(prompt,k=query_num, fetch_k=10) # Sending query to db
-        docs = retriever.invoke(prompt)                                         # retrieve response from chatgpt
+        docs = agent_executor.invoke(
+            {"input": f"{prompt} {post_prompt}"},
+            return_only_outputs=True,
+            )                                     # retrieve response from chatgpt
         full_response = random.choice(                                          # 1st sentence of response
-            ["I recommend the following games:\n",
-            f"Hi, human! These are the {len(docs)} best games:\n",
-            f"I bet you will love these {len(docs)} games:\n",]
+            [""]
         )
         
         # formatting response from db
         top_games = []
         assistant_response = ""
-        for idx, doc in enumerate(docs):
-            gamename = doc.metadata['name']
-            top_games.append(gamename)
-            assistant_response += f"{idx+1}. {gamename}\n"
-        
+        # for idx, doc in enumerate(docs['name']):
+        #     gamename = doc
+        #     top_games.append(gamename)
+        #     assistant_response += f"{idx+1}. {gamename}\n"
+        print(docs)
+        try:
+            assistant_response += docs["answer"]
+        except:
+            assistant_response += docs["output"]
         # separating response into chunk of words
         chunks = []
         for line in assistant_response.splitlines():
