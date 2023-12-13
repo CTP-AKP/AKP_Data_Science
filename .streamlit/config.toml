@@ -1,0 +1,6 @@
+[theme]
+primaryColor = "#FF0000"  # Bright red for interactive elements
+backgroundColor = "#000000"  # Black background for the main content area
+secondaryBackgroundColor = "#121212"  # A slightly lighter shade of black for the sidebar
+textColor = "#FFFFFF"  # White for text to contrast the dark background
+font = "monospace"  # A techy font style
