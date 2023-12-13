@@ -239,7 +239,7 @@ if prompt := st.chat_input("Need a game recommendation?"):
 
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": full_response})
-    if is_plot: st.session_state.gamename.append(docs['name'])
+    if is_plot: st.session_state.gamenames.append(docs['name'])
                 
 col1, col2, col3= st.columns([4,2,4])
 with col2:
