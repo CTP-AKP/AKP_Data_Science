@@ -16,7 +16,7 @@ Provide new and insightful recommendations for what Video Games to play next.
 ## Project Outline:
 Our data consists of descriptions, and a collection of over 83,000 games on the Steam platform. Current recommendation models use collaborative and/or content-based approaches. We use Large Language Models (LLM) and Langchain to make our recommendations.
 
-![ezgif com-video-to-gif-converted](https://github.com/CTP-AKP/AKP_Data_Science/assets/118378371/f7965024-75f3-4d87-83b2-3aecc85bd0c6)
+![demoGIF](https://github.com/CTP-AKP/AKP_Data_Science/assets/118378371/0ea45de1-c28b-441b-ba9e-28b698920e11)
 
 ## Practical Application:
 This project utilizes new and emerging technologies, to provide new insights for users to find games to play. Typical recommendation algorithms provide users with recommendations based off of similar developers and themes, while this technology can be combined alongside the same criteria, including descriptions of the game. Our application also allows users to directly query a LLM, with

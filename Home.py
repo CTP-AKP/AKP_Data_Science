@@ -78,8 +78,13 @@ retriever = SelfQueryRetriever.from_llm(
     enable_limit=True, 
 )
 
-emoji = '🕹️ GameInsightify'
-st.header(emoji)
+st.header("🕹️ GameInsightify - Your Personal Game Recommender")
+
+    # Description for users
+st.markdown("""
+        Welcome to GameInsightify! This chatbot will help you find the perfect game based on your preferences. 
+        Just type in what you're looking for in a game, and let our AI assistant provide recommendations.
+        """)
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -158,12 +163,12 @@ with col2:
 
 
 # Styling on Tabs
-css=f'''
-div.stTabs {{
-    height: 40vh;
-    overflow-y: scroll;
+css = '''
+div.stTabs {
+    min-height: 20vh;  # Minimum height set for the chat area
+    max-height: 60vh;  # Maximum height, after which scrolling starts
+    overflow-y: auto;  # Allows scrolling when content exceeds max height
     overflow-x: hidden;
-}}
-</style>
+}
 '''
 st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
