@@ -149,10 +149,14 @@ agent = (
 )
 agent_executor = AgentExecutor(tools=[retriever_tool], agent=agent, verbose=True)
 
-post_prompt = """Do not give me any information that is not included in the document. 
-    If you do not have an answer, say 'I do not have an answer for that, please ask another question.' 
+post_prompt = """
+    Respond with a respectable and friendy tone.
+    If you are able to, provide the links to the steam site for the games answer.
+    Do not give me any information that is not included in the document. 
+    If you do not have an answer, your response should be kind and apologetic, as to why you do not have an answer. 
     If you need more context from the user, ask them to provide more context in the next query. Do not include games that contain the queried game in the title.
     If a user asks for a type of game, use that type to find a game that mentions the type.
+    If a user asks for a specific number of games, and you cannot provide that, answer with what games you found and explain why you could not find others.
 """
 
 st.header("🕹️ GameInsightify - Your Personal Game Recommender")
