@@ -78,8 +78,13 @@ retriever = SelfQueryRetriever.from_llm(
     enable_limit=True, 
 )
 
-emoji = '🕹️ GameInsightify'
-st.header(emoji)
+st.header("🕹️ GameInsightify - Your Personal Game Recommender")
+
+    # Description for users
+st.markdown("""
+        Welcome to GameInsightify! This chatbot will help you find the perfect game based on your preferences. 
+        Just type in what you're looking for in a game, and let our AI assistant provide recommendations.
+        """)
 
 # Initialize chat history
 if "messages" not in st.session_state:
