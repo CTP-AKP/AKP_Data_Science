@@ -121,6 +121,15 @@ def rec_dfbox():
             df_names = pd.DataFrame(rec_games, columns=['gamename'])
             st.write(title)
             st.dataframe(df_names[0:len(rec_games)])
+# Overloaded with argument of names
+def home_dfbox(rec_games):
+    title = f":blue[Recommended] by :green[GameInsightify]"
+    if len(rec_games) > 0:
+        with st.sidebar:
+            df_names = pd.DataFrame(rec_games, columns=['gamename'])
+            st.write(title)
+            st.dataframe(df_names[0:len(rec_games)])
+
 
 # plot 1 Section
     """Plot contains the top ranked games
@@ -312,7 +321,7 @@ def exec_page(emoji, theme, page_genres):
     
     # Header
     st.header(emoji)
-    st.title(f"Customized Plot on :blue[{theme}]")
+    st.header(f"Customized Plot on :blue[{theme}]")
 
     ##### FILTER #####
     # Featuer for both axis
@@ -370,7 +379,7 @@ def exec_page_home(theme):
     
     # Header
     st.header("👋")
-    st.title("Customized Plot on :blue[General Features]")
+    st.header("Customized Plot on :blue[General Features]")
 
     ##### FILTER #####
     # Featuer for both axis
@@ -444,7 +453,7 @@ def exec_page_pub(emoji, theme, main_genre):
     
     # Header
     st.header(emoji)
-    st.title(f"Customized Plot on :blue[{theme}]")
+    st.header(f"Customized Plot on :blue[{theme}]")
 
     ##### FILTER #####
     # Featuer for both axis
