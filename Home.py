@@ -1,9 +1,14 @@
 import streamlit as st
+import pandas as pd
 import os
 import random
 import time
 from module.__custom__ import *
 from streamlit_extras.switch_page_button import switch_page
+df = pd.read_csv('./data/cosine.csv')
+
+with open( ".\css\style.css" ) as css:
+    st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
 
 
 # Openai API Key
@@ -56,13 +61,12 @@ db_plot = Chroma(
     embedding_function=embedding
 )
 
-
 with st.sidebar: is_plot = st.toggle('Enable Plot')
 db_selected = db_cos
 if is_plot: db_selected = db_plot
 
 
-
+##### Conversational Retrieval #####
 from langchain.agents.agent_toolkits.conversational_retrieval.tool import (
     create_retriever_tool,
 )
@@ -72,8 +76,30 @@ retriever_tool = create_retriever_tool(
     "document-retriever",
     "Query a retriever to get information about the video game dataset.",
 )
-from typing import List
+##################################
 
+
+##### Retriever - Self Query #####
+metadata_field_info = [
+    AttributeInfo(
+        name="name",
+        description="The name of the video game on steam",
+        type="string",
+    )
+]
+document_content_description = "Brief summary of a video game on Steam"
+
+retriever_plot = SelfQueryRetriever.from_llm(
+    llm,
+    db_selected,
+    document_content_description,
+    metadata_field_info,
+    enable_limit=True, 
+)
+##################################
+
+
+from typing import List
 from langchain.utils.openai_functions import convert_pydantic_to_openai_function
 from pydantic import BaseModel, Field
 
@@ -92,8 +118,8 @@ class Response(BaseModel):
         description="A list of the names of the games found for the user. Only include the game name if it was given as a result to the user's query."
     )
 
-import json
 
+import json
 from langchain.schema.agent import AgentActionMessageLog, AgentFinish
 def parse(output):
     # If no function was invoked, return to user
@@ -150,16 +176,19 @@ agent = (
 agent_executor = AgentExecutor(tools=[retriever_tool], agent=agent, verbose=True)
 
 post_prompt = """
-    Respond with a respectable and friendy tone.
-    If you are able to, provide the links to the steam site for the games answer.
-    Do not give me any information that is not included in the document. 
-    If you do not have an answer, your response should be kind and apologetic, as to why you do not have an answer. 
-    If you need more context from the user, ask them to provide more context in the next query. Do not include games that contain the queried game in the title.
-    If a user asks for a type of game, use that type to find a game that mentions the type.
-    If a user asks for a specific number of games, and you cannot provide that, answer with what games you found and explain why you could not find others.
+    1. Respond with a respectable and friendy tone.
+    2. You should give the best possible answer based on user's query. 
+    3. Do not give me any information that is not included in the document. 
+    4. If you are able to, provide the links to the steam site for the games answer.
+    5. If you need more context from the user, ask them to provide more context in the next query. Do not include games that contain the queried game in the title.
+    6. If a user asks for a type of game, use that type to find a game that mentions the type.
 """
+# If you do not have an answer, your response should be kind and apologetic, as to why you do not have an answer. 
+# If a user asks for a specific number of games, and you cannot provide that, answer with what games you found and explain why you could not find others.
 
-st.header("🕹️ GameInsightify - Your Personal Game Recommender")
+st.header("🕹️ GameInsightify")
+st.header("Your Personal :green[Game Recommender]")
+st.image('./data/img/demoGIF.gif')
 
     # Description for users
 st.markdown("""
@@ -176,7 +205,7 @@ if 'gamenames' not in st.session_state:
 # Slider on range and button to clear chat history
 col1, col2= st.columns([8,2])
 with col1: 
-    st.title("Game Recommender")
+    pass
 with col2: 
     if st.button("Clear chat"):
         st.session_state.messages = []
@@ -201,28 +230,39 @@ if prompt := st.chat_input("Need a game recommendation?"):
 
     with st.chat_message("assistant"):                                          # Display assistant response in chat message container
         message_placeholder = st.empty()
+        assistant_response = ""
+        full_response = ""
         
         # docs = db.max_marginal_relevance_search(prompt,k=query_num, fetch_k=10) # Sending query to db
-        docs = agent_executor.invoke(
-            {"input": f"{prompt} {post_prompt}"},
-            return_only_outputs=True,
+        if is_plot:
+            docs = retriever_plot.invoke(prompt)
+            full_response = random.choice(                                          # 1st sentence of response
+                ["I recommend the following games:\n",
+                f"Hi, human! These are the {len(docs)} best games:\n",
+                f"I bet you will love these {len(docs)} games:\n",]
+            )
+            
+            # formatting response from db
+            top_games = []   
+            for idx, doc in enumerate(docs):
+                gamename = doc.metadata['name']
+                top_games.append(gamename)
+                assistant_response += f"{idx+1}. {gamename}\n"
+            
+        else:        
+            docs = agent_executor.invoke(
+                {"input": f"{prompt} {post_prompt}"},
+                return_only_outputs=True,
             )                                     # retrieve response from chatgpt
-        full_response = random.choice(                                          # 1st sentence of response
-            [""]
-        )
+            try:
+                assistant_response += docs["answer"]
+            except:
+                assistant_response += docs["output"]
+            top_games = docs['name']
         
-        # formatting response from db
-        top_games = []
-        assistant_response = ""
-        # for idx, doc in enumerate(docs['name']):
-        #     gamename = doc
-        #     top_games.append(gamename)
-        #     assistant_response += f"{idx+1}. {gamename}\n"
+
         print(docs)
-        try:
-            assistant_response += docs["answer"]
-        except:
-            assistant_response += docs["output"]
+
         # separating response into chunk of words
         chunks = []
         for line in assistant_response.splitlines():
@@ -239,14 +279,22 @@ if prompt := st.chat_input("Need a game recommendation?"):
 
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": full_response})
-    if is_plot: st.session_state.gamenames.append(docs['name'])
-                
-col1, col2, col3= st.columns([4,2,4])
+    if is_plot: st.session_state.gamenames.append(top_games)
+
+col1, col2, col3= st.columns([4,3,4])
 with col2:
     if is_plot and db_selected==db_plot:
         if st.button("Plot Games"):     # button in center column
             switch_page('Overall')
-
+    else:
+        try:
+            appid = df[df['Name']==top_games[0]]['AppID'].iloc[0]
+            url = f'https://store.steampowered.com/app/{appid}'
+            st.link_button("Check on Steam", url)
+        except: pass
+with st.sidebar: 
+    try: home_dfbox(top_games)
+    except: pass
 
 # Styling on Tabs
 css = '''
